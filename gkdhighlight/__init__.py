@@ -9,14 +9,14 @@ def import_(style: dev.Group, *, self: dev.Interpreter, tex_print):
 def highlight(language: dev.Group, code: dev.Group, *, self: dev.Interpreter, tex_print, style : 'str | dev.Group'= '', expand=None):
     if expand:
         expand = cast(dev.Group, expand)
-        expand = eval(dev.get_raw_from_span_params(self.src, expand.offs)[len("^expand"):].strip())
+        expand = eval(dev.get_raw_from_span_params(self.src, expand.offs).strip())
 
     if not isinstance(style, str):
         style = cast(dev.Group, style)
         if expand:
             style = dev.eval_to_string(self, style.obj)
         else:
-            style = dev.get_raw_from_span_params(self.src, style.offs)[len("^style"):]
+            style = dev.get_raw_from_span_params(self.src, style.offs)
     style = style.strip()
 
     if expand:

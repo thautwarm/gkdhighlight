@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from pathlib import Path
 
 
-version = 0.1
+version = "0.2"
 with Path('README.md').open() as readme:
     readme = readme.read()
 
@@ -23,7 +23,7 @@ setup(
     entry_points={"console_scripts": []},
     # above option specifies what commands to install,
     # e.g: entry_points={"console_scripts": ["yapypy=yapypy.cmd:compiler"]}
-    install_requires=['pygments', 'gkdtex'], # dependencies
+    install_requires=['pygments', 'gkdtex >=0.4, <0.5'], # dependencies
     platforms="any",
     classifiers=[
         "Programming Language :: Python :: 3.6",
@@ -33,4 +33,3 @@ setup(
     ],
     zip_safe=False,
 )
-

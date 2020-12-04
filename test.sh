@@ -1,0 +1,1 @@
+gkdtex runtest/a.tex
