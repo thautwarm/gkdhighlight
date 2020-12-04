@@ -13,25 +13,23 @@ No LaTeX dependencies other than `xcolor` and `asmmath`, no shell-escape, no com
 \begin{document}
 ...
 
+\gkd@highlight{ocaml}{
+    module FM = Functor(M)
+    let res = print_endline FM.message
+    }
+\gkd@loadpygments{colorful}
 \gkd@highlight{python}{
-def f(x):
-    print(1)
+    class S:
+        def f(self, x):
+            return print(1 + x)
 }
-
-\gkd@loadpygments{manni}
 \gkd@loadpygments{perldoc}
-
-\gkd@highlight{python}{^style manni}{
-def f(x):
-    print(1)
-}
-
 \gkd@highlight{haskell}{^style perldoc}{
-data NAT repr were NAT { Z :: repr, S :: repr -> repr }
-data Nat
-    = Z
-    | S Nat
+    data NAT repr = NAT { Z :: repr, S :: repr -> repr }
+    data Nat
+        = Z
+        | S Nat
 }
 ```
-![example.PNG](example.PNG)
+![example0.PNG](example0.PNG)
 
