@@ -1,5 +1,7 @@
 # GkdHighlight
 
+GKD means "(please) do it faster", which is an old saying in China.
+
 ## Backgroud, Installation and CLI
 
 <details>
