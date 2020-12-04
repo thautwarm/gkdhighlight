@@ -1,6 +1,6 @@
 # GkdHighlight
 
-GKD means "(please) do it faster", which is an old saying in China.
+GKD, i.e., 搞快点, means "(please) do it faster", which is an old saying in China.
 
 ## Backgroud, Installation and CLI
 
