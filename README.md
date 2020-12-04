@@ -17,14 +17,17 @@ No LaTeX dependencies other than `xcolor` and `asmmath`, no shell-escape, no com
     module FM = Functor(M)
     let res = print_endline FM.message
     }
+
+
 \gkd@loadpygments{colorful}
 \gkd@highlight{python}{
     class S:
         def f(self, x):
             return print(1 + x)
 }
+
 \gkd@loadpygments{perldoc}
-\gkd@highlight{haskell}{^style perldoc}{
+\gkd@highlight{haskell}{
     data NAT repr = NAT { Z :: repr, S :: repr -> repr }
     data Nat
         = Z
