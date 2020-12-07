@@ -1,9 +1,26 @@
 import io
+import re
+import typing
 from pygments.lexers import get_lexer_by_name
 from pygments.styles import get_style_by_name
-from pygments.lexer import Lexer
+from pygments.lexer import Lexer, RegexLexer
 from pygments.style import Style
+from pygments.token import string_to_tokentype
 from functools import lru_cache
+NoEscape = string_to_tokentype("NoEscape")
+
+
+@lru_cache(maxsize=None)
+def allow_math_escape(base_lexer: typing.Type[RegexLexer], noescape):
+
+    class ExtLexer(RegexLexer):
+        name = base_lexer.name
+        tokens = {
+            **base_lexer.tokens,
+            'root': [(noescape, NoEscape), *base_lexer.tokens['root']]
+        }
+    return ExtLexer()
+
 
 _xs = 'abcdefghijklmnopqrstuvwxyz'
 _N = len(_xs)
@@ -72,7 +89,7 @@ escape_table = {
     '%': r'\%',
     '$': r'\$',
     '#': r'\#',
-    '_': r'\_',
+    '_': r'{\textunderscore}',
     '{': r'\{',
     '}': r'\}',
     '~': r'\texttt{\~{}}',
@@ -83,30 +100,43 @@ escape_table = {
     '[': r'\normalsize[',
     ']': r'\normalsize]'
 }
+
 @lru_cache()
-def escape_cache(x: str):
+def escape_cache(x: str, noescape):
     chars = []
     for ch in x:
-        chars.append(escape_table.get(ch, ch))
+        if ch in noescape:
+            chars.append(ch)
+        else:
+            chars.append(escape_table.get(ch, ch))
     return ''.join(chars)
 
-def escape(x: str):
+def escape(x: str, noescape):
     if len(x) < 9:
-        return escape_cache(x)
+        return escape_cache(x, noescape)
     buf = io.StringIO()
     for ch in x:
-        buf.write(escape_table.get(ch, ch))
+        if ch in noescape:
+            buf.write(ch)
+        else:
+            buf.write(escape_table.get(ch, ch))
     return buf.getvalue()
 
 
-def to_latex(text: str, lang: str, style: str, tex_print):
+def to_latex(text: str, lang: str, style: str, tex_print, noescape: str):
     style = style or last_style[0] # type: str
-    lexer = get_lexer_by_name(lang) # type: Lexer
+    if noescape:
+        lexer = allow_math_escape(type(get_lexer_by_name(lang)), noescape) # type: Lexer
+    else:
+        lexer = get_lexer_by_name(lang)
     generator = lexer.get_tokens(text)
     style =  get_style_by_name(style) # type: Style
     tex_print(r'\noindent ')
     for scope, text in generator:
-        n = get_style(style, scope)
-        text = escape(text)
-        rendered = f'\\{n}{{{text}}}'
-        tex_print(rendered)
+        if scope is NoEscape:
+            tex_print(text)
+        else:
+            n = get_style(style, scope)
+            text = escape(text, noescape)
+            rendered = f'\\{n}{{{text}}}'
+            tex_print(rendered)

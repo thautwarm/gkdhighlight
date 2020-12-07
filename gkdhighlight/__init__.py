@@ -6,10 +6,20 @@ def import_(style: dev.Group, *, self: dev.Interpreter, tex_print):
     style = dev.eval_to_string(self, style.obj)
     import_style(style, tex_print)
 
-def highlight(language: dev.Group, code: dev.Group, *, self: dev.Interpreter, tex_print, style : 'str | dev.Group'= '', expand=None):
+def highlight(language: dev.Group, code: dev.Group, *,
+              self: dev.Interpreter,
+              tex_print,
+              style : 'str | dev.Group'= '',
+              expand=None,
+              noescape=None):
     if expand:
         expand = cast(dev.Group, expand)
         expand = eval(dev.get_raw_from_span_params(self.src, expand.offs).strip())
+
+    if noescape:
+        noescape = dev.get_raw_from_span_params(self.src, noescape.offs).strip()
+    else:
+        noescape = ''
 
     if not isinstance(style, str):
         style = cast(dev.Group, style)
@@ -29,7 +39,7 @@ def highlight(language: dev.Group, code: dev.Group, *, self: dev.Interpreter, te
         code = dev.eval_to_string(self, code.obj)
     else:
         code = dev.get_raw_from_span_params(self.src, code.offs)
-    to_latex(code, language, style, tex_print)
+    to_latex(code, language, style, tex_print, noescape)
 
 
 class GkdInterface:
@@ -39,7 +49,7 @@ class GkdInterface:
         tex_print(
         r"""
 \usepackage{amsmath}
-\usepackage{xcolor}        
+\usepackage{xcolor}
         """)
         import_style("pastie", tex_print)
         self.globals['gkd@highlight'] = highlight
